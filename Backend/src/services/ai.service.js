@@ -48,9 +48,6 @@ const interviewReportSchema = z.object({
 
 
 
-// RETRY LOGIC
-
-
 async function callAI(config, retries = 3) {
   try {
 
@@ -80,8 +77,6 @@ async function callAI(config, retries = 3) {
 }
 
 
-// CLEANER
-
 function cleanText(text) {
   return text
     .replace(/-1\.0-/g, "")
@@ -92,8 +87,6 @@ function cleanText(text) {
 }
 
 
-
-// INTERVIEW REPORT
 
 
 async function generateInterviewReport({
@@ -246,7 +239,7 @@ Minimum requirements:
 
     console.error("REAL AI ERROR:", error.message);
 
-    //SAFE FALLBACK
+   
 
     return {
       title: "Full Stack Developer",
@@ -388,8 +381,6 @@ Minimum requirements:
 
 
 
-// PDF GENERATION
-
 async function generatePdfFromHtml(htmlContent) {
 
   const browser = await puppeteer.launch();
@@ -419,8 +410,6 @@ async function generatePdfFromHtml(htmlContent) {
 }
 
 
-
-//RESUME PDF
 
 
 async function generateResumePdf({
