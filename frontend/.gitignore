@@ -1,0 +1,71 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+
+# Build files
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database dumps
+*.dump
+*.archive
+
+# Uploads / temp files
+uploads/
+temp/
+tmp/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Next.js (if present)
+.next/
+
+# TypeScript
+*.tsbuildinfo
+
+# Secrets
+config/secrets.js
+config/keys.js
+
+# Docker
+.dockerignore
+
+# Misc
+*.tgz
+*.bak
+*.old
