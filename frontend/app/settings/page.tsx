@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useAuth } from "@/features/auth/hooks/useAuth"
 import {
   Menu,
   X,
@@ -16,11 +17,8 @@ import {
 
 export default function SettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, handleLogout } = useAuth()
 
-  const handleLogout = () => {
-    
-    console.log("logout")
-  }
 
   const handleDeleteHistory = () => {
    
@@ -104,16 +102,16 @@ export default function SettingsPage() {
           <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3 flex items-center gap-3">
 
             <div className="w-11 h-11 rounded-full bg-gradient-to-br from-cyan-600 to-teal-500 flex items-center justify-center text-white font-semibold">
-              S
+              {user?.username?.[0]?.toUpperCase()}
             </div>
 
             <div>
               <p className="text-sm font-medium text-slate-800">
-                Sehaj
+                {user?.username}
               </p>
 
               <p className="text-xs text-slate-500">
-                sehaj@email.com
+                {user?.email}
               </p>
             </div>
 
@@ -210,12 +208,12 @@ export default function SettingsPage() {
 
                 <SettingRow
                   title="Username"
-                  value="Sehaj"
+                  value={user?.username}
                 />
 
                 <SettingRow
                   title="Email"
-                  value="sehaj@email.com"
+                  value={user?.email}
                 />
 
               </div>
@@ -245,25 +243,7 @@ export default function SettingsPage() {
 
               <div className="space-y-4">
 
-                
-                <button
-                  onClick={handleDeleteHistory}
-                  className="w-full flex items-center justify-between rounded-2xl border border-slate-200 hover:border-red-200 hover:bg-red-50/40 px-5 py-4 transition"
-                >
-
-                  <div className="text-left">
-                    <p className="text-[15px] font-medium text-slate-800">
-                      Delete Interview History
-                    </p>
-
-                    <p className="text-sm text-slate-500 mt-1">
-                      Remove all saved interview reports
-                    </p>
-                  </div>
-
-                  <ChevronRight className="w-5 h-5 text-slate-400" />
-
-                </button>
+            
 
                 
                 <button
@@ -339,7 +319,7 @@ function SettingRow({
   value,
 }: {
   title: string
-  value: string
+  value?: string
 }) {
   return (
     <div className="flex items-center justify-between border border-slate-200 rounded-2xl px-5 py-4">

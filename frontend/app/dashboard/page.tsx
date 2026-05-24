@@ -1,6 +1,7 @@
 "use client"
-
+import axios from "axios"
 import { useState } from "react"
+import { useAuth } from "@/features/auth/hooks/useAuth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -17,10 +18,51 @@ import {
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user } = useAuth()
   const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [selfDesc, setSelfDesc] = useState("")
   const [jobDesc, setJobDesc] = useState("")
+  const handleGenerate = async () => {
+  if (!file) {
+    alert("Please upload resume")
+    return
+  }
+
+  try {
+    const formData = new FormData()
+
+    formData.append("resume", file)
+    formData.append("jobDescription", jobDesc)
+    formData.append("selfDescription", selfDesc)
+
+    
+
+    const response = await axios.post(
+      "http://localhost:3000/api/interview",
+      formData,
+      {
+        headers: {
+         
+          "Content-Type": "multipart/form-data",
+        },
+         withCredentials: true,
+      }
+    )
+
+    localStorage.setItem(
+      "report",
+      JSON.stringify(response.data.interviewReport)
+    )
+
+    router.push("/results")
+
+  } catch (err: any) {
+    console.log(err.response?.data)
+    console.error(err)
+    alert("Failed to generate report")
+  }
+}
 
   return (
     <div className="min-h-screen bg-[#f6f8f9] overflow-x-hidden">
@@ -104,11 +146,11 @@ export default function DashboardPage() {
 
             <div>
               <p className="text-sm font-medium text-slate-800">
-                Sehaj
+                {user?.username || "ResumeCore User"}
               </p>
 
               <p className="text-xs text-slate-500">
-                sehaj@email.com
+                {user?.email || "user@email.com"}
               </p>
             </div>
 
@@ -321,7 +363,8 @@ export default function DashboardPage() {
                 </div>
 
                 <button 
-                 onClick={() => router.push("/results")}
+                
+                onClick={handleGenerate}
                 className="group mt-7 w-full rounded-2xl bg-slate-900 text-white py-4 text-[15px] font-medium hover:bg-slate-800 transition flex items-center justify-center gap-2">
 
                   Generate Report

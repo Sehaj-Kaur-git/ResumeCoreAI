@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { useRouter } from "next/navigation"
 import {
   ArrowRight,
@@ -15,42 +16,32 @@ import {
 
 import { useAuth } from "@/features/auth/hooks/useAuth"
 
-const demoReports = [
-  {
-    _id: "1",
-    title: "Frontend Engineer Interview Prep",
-    matchScore: 87,
-    createdAt: "2 hours ago",
-    skillGaps: ["System Design", "Testing"],
-  },
-  {
-    _id: "2",
-    title: "MERN Stack Developer Analysis",
-    matchScore: 81,
-    createdAt: "Yesterday",
-    skillGaps: ["Docker", "CI/CD"],
-  },
-  {
-    _id: "3",
-    title: "React Internship Preparation",
-    matchScore: 92,
-    createdAt: "3 days ago",
-    skillGaps: ["TypeScript"],
-  },
-  {
-    _id: "4",
-    title: "Backend Developer Interview Report",
-    matchScore: 76,
-    createdAt: "Last week",
-    skillGaps: ["Redis", "Microservices"],
-  },
-]
-
 export default function HistoryPage() {
   const router = useRouter()
   const { user } = useAuth()
 
+  const [reports, setReports] = useState<any[]>([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  useEffect(() => {
+    fetchReports()
+  }, [])
+
+  const fetchReports = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/interview",
+        {
+          withCredentials: true,
+        }
+      )
+
+      setReports(response.data.interviewReports || [])
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const initial =
     user?.username?.[0]?.toUpperCase() ||
@@ -59,8 +50,6 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-[#f6fafa] relative overflow-x-hidden">
-
-    
 
       
       {sidebarOpen && (
@@ -81,7 +70,7 @@ export default function HistoryPage() {
         `}
       >
 
-       
+        
         <div>
 
           
@@ -100,6 +89,7 @@ export default function HistoryPage() {
             <button onClick={() => setSidebarOpen(false)}>
               <X className="w-5 h-5 text-slate-500" />
             </button>
+
           </div>
 
           
@@ -137,6 +127,7 @@ export default function HistoryPage() {
             </div>
 
             <div className="overflow-hidden">
+
               <p className="text-sm font-medium text-slate-800 truncate">
                 {user?.username || "ResumeCore User"}
               </p>
@@ -144,6 +135,7 @@ export default function HistoryPage() {
               <p className="text-xs text-slate-400 truncate">
                 {user?.email || "user@email.com"}
               </p>
+
             </div>
 
           </div>
@@ -169,6 +161,7 @@ export default function HistoryPage() {
 
             
             <div>
+
               <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
                 History
               </h1>
@@ -176,6 +169,7 @@ export default function HistoryPage() {
               <p className="text-sm text-slate-500 mt-1">
                 Previously generated interview reports
               </p>
+
             </div>
 
           </div>
@@ -212,12 +206,26 @@ export default function HistoryPage() {
         </div>
 
         
+        {reports.length === 0 && (
+
+          <div className="bg-white border border-slate-200 rounded-[28px] p-10 text-center">
+
+            <p className="text-slate-500 text-[15px]">
+              No interview reports generated yet.
+            </p>
+
+          </div>
+
+        )}
+
+        
         <div className="space-y-5">
 
-          {demoReports.map((report, index) => (
+          {reports.map((report, index) => (
+
             <div
               key={report._id}
-              className="group bg-white/90 backdrop-blur border border-slate-200 rounded-[28px] p-6 md:p-7 shadow-[0_4px_30px_rgba(15,23,42,0.03)] hover:-translate-y-[2px] hover:shadow-[0_10px_40px_rgba(15,23,42,0.06)] transition-all duration-300"
+              className="group bg-white border border-slate-200 rounded-[28px] p-6 md:p-7 shadow-sm hover:-translate-y-[2px] hover:shadow-lg transition-all duration-300"
             >
 
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -248,7 +256,7 @@ export default function HistoryPage() {
 
                         <Clock3 className="w-3.5 h-3.5" />
 
-                        {report.createdAt}
+                        {new Date(report.createdAt).toLocaleDateString()}
 
                       </div>
 
@@ -256,7 +264,7 @@ export default function HistoryPage() {
 
                     
                     <h3 className="text-[22px] leading-tight font-semibold tracking-tight text-slate-900">
-                      {report.title}
+                      {report.title || "Interview Report"}
                     </h3>
 
                     
@@ -267,14 +275,14 @@ export default function HistoryPage() {
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-cyan-600 to-teal-500"
                           style={{
-                            width: `${report.matchScore}%`,
+                            width: `${report.matchScore || 0}%`,
                           }}
                         />
 
                       </div>
 
                       <span className="text-sm font-medium text-slate-700">
-                        {report.matchScore}% Match
+                        {report.matchScore || 0}% Match
                       </span>
 
                     </div>
@@ -282,14 +290,18 @@ export default function HistoryPage() {
                     
                     <div className="flex flex-wrap gap-2 mt-5">
 
-                      {report.skillGaps.map((skill) => (
-                        <div
-                          key={skill}
-                          className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
-                        >
-                          {skill}
-                        </div>
-                      ))}
+                      {(report.skillGaps || []).map(
+                        (item: any, index: number) => (
+
+                          <div
+                            key={index}
+                            className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
+                          >
+                            {item.skill}
+                          </div>
+
+                        )
+                      )}
 
                     </div>
 
@@ -297,16 +309,25 @@ export default function HistoryPage() {
 
                 </div>
 
-               
+                
                 <div className="flex items-center">
 
                   <button
-                    onClick={() => router.push("/results")}
+                    onClick={() => {
+                      localStorage.setItem(
+                        "report",
+                        JSON.stringify(report)
+                      )
+
+                      router.push("/results")
+                    }}
                     className="group/button flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-cyan-700 transition"
                   >
+
                     View Report
 
                     <ArrowRight className="w-4 h-4 transition-transform group-hover/button:translate-x-1" />
+
                   </button>
 
                 </div>
@@ -314,16 +335,16 @@ export default function HistoryPage() {
               </div>
 
             </div>
+
           ))}
 
         </div>
 
       </main>
+
     </div>
   )
 }
-
-
 
 function SidebarItem({
   icon,
