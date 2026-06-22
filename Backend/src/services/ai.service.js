@@ -243,6 +243,8 @@ Minimum requirements:
 
     return {
       title: "Full Stack Developer",
+      notice:
+      "Demo data is currently being displayed. Live AI generation may be temporarily unavailable due to API limits, high demand, or unforeseen service interruptions.",
 
       matchScore: 80,
 
