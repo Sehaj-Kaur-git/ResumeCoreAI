@@ -39,7 +39,7 @@ export default function DashboardPage() {
     
 
     const response = await axios.post(
-      "http://localhost:3000/api/interview",
+      `${process.env.NEXT_PUBLIC_API_URL}/api/interview`,
       formData,
       {
         headers: {

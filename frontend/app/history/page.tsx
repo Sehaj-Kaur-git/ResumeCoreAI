@@ -30,7 +30,7 @@ export default function HistoryPage() {
   const fetchReports = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/interview",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/interview`,
         {
           withCredentials: true,
         }
